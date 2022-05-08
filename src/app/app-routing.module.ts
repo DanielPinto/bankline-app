@@ -7,8 +7,8 @@ import { MovimentacaoListComponent } from './components/movimentacao-list/movime
 
 const routes: Routes = [
   { path: 'movimentacoesnew', component: MovimentacaoNewComponent },
-  { path: 'movimentacoes', component: MovimentacaoListComponent },
-  { path: '', redirectTo: 'movimentacoes', pathMatch: 'full' },
+  { path: 'movimentacao', component: MovimentacaoListComponent },
+  { path: '', redirectTo: 'movimentacao', pathMatch: 'full' },
 ];
 
 @NgModule({
