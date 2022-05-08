@@ -15,6 +15,10 @@ export class MovimentacaoService {
     return this.http.get(`${baseUrl}/movimentacao`);
   }
 
+  findByIdConta(idConta: any): Observable<any> {
+    return this.http.get(`${baseUrl}/movimentacao/${idConta}`);
+  }
+
   create(movimentacao: any): Observable<any> {
     return this.http.post(`${baseUrl}/movimentacao`, movimentacao);
   }

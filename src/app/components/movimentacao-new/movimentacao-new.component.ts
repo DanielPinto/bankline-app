@@ -1,7 +1,9 @@
 // compoenents/movimentacao-new.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CorrentistaService } from 'src/app/services/correntista.service';
 import { MovimentacaoService } from 'src/app/services/movimentacao.service';
+import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-movimentacao-new',
@@ -17,14 +19,39 @@ export class MovimentacaoNewComponent implements OnInit {
   valor: any;
   tipo: any;
 
+
+
   constructor(
     private movimentacaoService: MovimentacaoService,
-    private correntistaService: CorrentistaService,
+    private correntistaService: CorrentistaService
   ) { }
+
+
+  private _success = new Subject<string>();
+
+  staticAlertClosed = false;
+  successMessage = '';
+
+  @ViewChild('staticAlert', { static: false })
+  staticAlert!: NgbAlert;
+  @ViewChild('selfClosingAlert', { static: false })
+  selfClosingAlert!: NgbAlert;
 
   ngOnInit(): void {
     this.exibirCorrentistas();
+    setTimeout(() => this.staticAlert.close(), 20000);
+
+    this._success.subscribe(message => this.successMessage = message);
+    this._success.pipe(debounceTime(5000)).subscribe(() => {
+      if (this.selfClosingAlert) {
+        this.selfClosingAlert.close();
+      }
+    });
   }
+
+
+  public changeSuccessMessage() { this._success.next('Movimentação cadastrada com sucesso!'); }
+
   exibirCorrentistas(): void {
     this.correntistaService.list()
       .subscribe(
@@ -52,10 +79,21 @@ export class MovimentacaoNewComponent implements OnInit {
       .subscribe(
         response => {
           console.log(response);
+          this.changeSuccessMessage();
+          this.clearFields();
         },
         error => {
+          this.changeSuccessMessage();
           console.log(error);
         });
   }
+
+  clearFields(): void {
+    this.valor = 0;
+    this.tipo = '';
+    this.descricao = '';
+  }
+
+
 
 }
